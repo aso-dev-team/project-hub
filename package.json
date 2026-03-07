@@ -1,0 +1,25 @@
+{
+  "name": "project-hub",
+  "private": true,
+  "packageManager": "pnpm@10.18.1",
+  "scripts": {
+    "dev:web": "pnpm --dir web dev",
+    "dev:api": "dotnet watch --project api/LinearStyle.Api.csproj",
+    "dev:ext": "go run ./ext-api/cmd/server",
+    "dev:db": "docker compose up postgres -d",
+    "dev:db:reset": "docker compose -f .devcontainer/docker-compose.yml down -v",
+    "lint:web": "pnpm --dir web lint",
+    "lint:docs": "textlint README.md CONTRIBUTING.md docs/*.md",
+    "lint": "pnpm run lint:web && pnpm run lint:docs",
+    "check:api": "dotnet build api/LinearStyle.Api.csproj --nologo",
+    "test:ext": "cd ext-api && go test ./...",
+    "check:ext": "pnpm run test:ext",
+    "check": "pnpm run lint && pnpm run check:api && pnpm run check:ext",
+    "test": "pnpm run test:ext",
+    "format:go": "gofmt -w ./ext-api"
+  },
+  "devDependencies": {
+    "textlint": "^15.5.2",
+    "textlint-rule-preset-ja-spacing": "^2.4.3"
+  }
+}

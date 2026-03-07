@@ -1,0 +1,42 @@
+name: Check
+
+on:
+  pull_request:
+  push:
+    branches:
+      - main
+
+jobs:
+  docs-and-web:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: pnpm/action-setup@v4
+        with:
+          version: 10.18.1
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: pnpm
+      - run: pnpm install --frozen-lockfile
+      - run: pnpm run lint
+
+  api:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-dotnet@v4
+        with:
+          dotnet-version: 10.0.x
+      - run: dotnet build api/LinearStyle.Api.csproj --nologo
+
+  ext-api:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-go@v5
+        with:
+          go-version-file: ext-api/go.mod
+          cache-dependency-path: ext-api/go.sum
+      - working-directory: ext-api
+        run: go test ./...

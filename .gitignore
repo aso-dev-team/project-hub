@@ -1,0 +1,21 @@
+# Node
+node_modules
+.pnpm-store
+.next
+out
+
+# .NET
+bin
+obj
+
+# Go
+dist
+
+# Env
+.env
+.env.local
+.env.*.local
+
+# IDE
+.idea
+.DS_Store

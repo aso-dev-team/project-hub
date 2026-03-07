@@ -1,0 +1,10 @@
+# Future deployment sketch.
+# Not used by the canonical local development flow in this phase.
+:80 {
+  reverse_proxy /api/ext/* ext-api:8081
+  reverse_proxy /api/* api:5050
+  reverse_proxy /graphql* api:5050
+  reverse_proxy /hubs/* api:5050
+  reverse_proxy /healthz api:5050
+  reverse_proxy /* web:3000
+}

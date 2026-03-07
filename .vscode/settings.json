@@ -1,0 +1,40 @@
+{
+  "explorer.fileNesting.enabled": true,
+  "explorer.fileNesting.patterns": {
+    ".env": ".env.example",
+    "*.cs": "${capture}.*.cs, ${capture}.designer.cs",
+    "*.csproj": "${capture}.csproj.user",
+    "*.json": "${capture}.*.json",
+    "*.ts": "${capture}.*.ts",
+    "AGENTS.md": "AGENTS.*.md",
+    "docker-compose.yml": "docker-compose.*.yml",
+    "package.json": "pnpm-lock.yaml",
+    "tsconfig.json": "tsconfig.*.json"
+  },
+  "files.exclude": {
+    "**/.git": true,
+    "**/.next": true,
+    "**/bin": true,
+    "**/node_modules": true,
+    "**/obj": true
+  },
+  "files.insertFinalNewline": true,
+  "files.watcherExclude": {
+    "**/.git/objects/**": true,
+    "**/.next/**": true,
+    "**/bin/**": true,
+    "**/node_modules/*/**": true,
+    "**/obj/**": true
+  },
+  "git.detectWorktrees": true,
+  "omnisharp.maxProjectResults": 250,
+  "omnisharp.projectLoadTimeout": 60,
+  "search.exclude": {
+    "**/.git/**": true,
+    "**/.next/**": true,
+    "**/bin/**": true,
+    "**/node_modules/**": true,
+    "**/obj/**": true
+  },
+  "terminal.integrated.suggest.enabled": false
+}

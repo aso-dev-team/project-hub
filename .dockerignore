@@ -1,0 +1,27 @@
+# ビルド出力（再帰的）
+**/bin/
+**/obj/
+**/node_modules/
+**/.pnpm-store/
+logs/
+artifacts/
+
+# IDE生成物
+**/*.csproj.user
+**/*.suo
+**/*.user
+
+# ビルド構成
+**/Debug/
+**/Release/
+**/x64/
+**/x86/
+
+# バージョン管理
+.git/
+.gitignore
+.dockerignore
+
+# ドキュメント
+*.md
+README*

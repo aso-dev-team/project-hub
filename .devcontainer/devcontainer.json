@@ -1,0 +1,29 @@
+{
+  "name": "project-hub-dev",
+  "dockerComposeFile": "docker-compose.yml",
+  "service": "api",
+  "workspaceFolder": "/workspaces/repo",
+
+  "shutdownAction": "stopCompose",
+
+  "customizations": {
+    "vscode": {
+      "extensions": [
+        "ms-dotnettools.csharp",
+        "ms-azuretools.vscode-docker",
+        "dbaeumer.vscode-eslint",
+        "esbenp.prettier-vscode",
+        "golang.go"
+      ],
+      "settings": {
+        "editor.formatOnSave": true
+      }
+    }
+  },
+
+  "forwardPorts": [3000, 5050, 8081],
+
+  "postCreateCommand": "bash -lc 'echo Dev container ready'",
+
+  "remoteUser": "root"
+}
