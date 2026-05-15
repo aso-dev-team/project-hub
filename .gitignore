@@ -16,6 +16,10 @@ out
 # .NET
 bin
 obj
+*.csproj.user
+*.csproj.lscache
+*.csproj.nuget.g.props
+*.csproj.nuget.g.targets
 
 # Go
 dist
