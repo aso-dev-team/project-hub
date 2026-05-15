@@ -4,6 +4,7 @@
     <Nullable>enable</Nullable>
     <ImplicitUsings>enable</ImplicitUsings>
     <RootNamespace>LinearStyle.Api</RootNamespace>
+    <UserSecretsId>eccae32c-ec2d-4eee-bc1d-2c10acc7b5f6</UserSecretsId>
   </PropertyGroup>
 
   <ItemGroup>
