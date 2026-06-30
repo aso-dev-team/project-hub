@@ -6,6 +6,7 @@ tmp
 *.swp
 *.swo
 *.tmp
+*.local.*
 
 # Node
 node_modules
@@ -24,11 +25,19 @@ obj
 # Go
 dist
 
+# Playwright
+output/playwright/
+
 # Env
 .env
 .env.local
 .env.*.local
 
+# Dev Container local overrides
+.devcontainer/docker-compose.local.yml
+.devcontainer/devcontainer-lock.json
+
 # IDE
+.serena/
 .idea
 .DS_Store

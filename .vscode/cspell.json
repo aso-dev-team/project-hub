@@ -1,5 +1,15 @@
 {
   "words": [
+    "healthcheck",
+    "isready",
     "lscache"
+  ],
+  "ignorePaths": [
+    "dist/**",
+    "node_modules/**",
+    "package-lock.json",
+    "Dockerfile",
+    "docker-compose.yml",
+    "devcontainer.json"
   ]
 }
