@@ -1,14 +1,16 @@
 services:
   postgres:
-    image: postgres:17-alpine
+    image: postgres
     environment:
       POSTGRES_DB: linear_like
       POSTGRES_USER: postgres
       POSTGRES_PASSWORD: postgres
     volumes:
-      - pgdata:/var/lib/postgresql/data
+      - pgdata:/var/lib/postgresql
+    ports:
+      - 5432:5432
     healthcheck:
-      test: ["CMD-SHELL", "pg_isready -U postgres -d linear_like"]
+      test: ['CMD-SHELL', 'pg_isready -U postgres -d linear_like']
       interval: 5s
       timeout: 3s
       retries: 20
@@ -16,23 +18,14 @@ services:
       - appnet
 
   web:
-    image: node:20-bookworm
-    working_dir: /workspaces/repo
-    command: bash -lc "corepack enable && pnpm install --frozen-lockfile && pnpm --dir web dev --hostname 0.0.0.0 --port 3000"
-    environment:
-      NODE_ENV: development
-      NEXT_PUBLIC_APP_API_URL: http://api:5050
-      NEXT_PUBLIC_APP_GRAPHQL_URL: http://api:5050/graphql
-      NEXT_PUBLIC_SIGNALR_HUB_URL: http://api:5050/hubs/board
-      NEXT_PUBLIC_DEFAULT_TEAM_ID: team-product
-      NEXT_PUBLIC_DEFAULT_PROJECT_ID: project-roadmap
-    volumes:
-      - ..:/workspaces/repo
-      - node_modules_root:/workspaces/repo/node_modules
-      - node_modules_web:/workspaces/repo/web/node_modules
-      - pnpm_store:/root/.local/share/pnpm/store
+    build:
+      context: ..
+      dockerfile: .devcontainer/Dockerfile
+      target: web
     ports:
-      - "3000:3000"
+      - 3000:3000
+    volumes:
+      - ..:/app
     depends_on:
       api:
         condition: service_started
@@ -43,23 +36,16 @@ services:
     build:
       context: ..
       dockerfile: .devcontainer/Dockerfile
-    working_dir: /workspaces/repo
-    command: bash -lc "dotnet restore api/LinearStyle.Api.csproj && dotnet watch --project api/LinearStyle.Api.csproj run --urls http://0.0.0.0:5050"
+      target: api
+    working_dir: /app
     environment:
-      ASPNETCORE_ENVIRONMENT: Development
-      ASPNETCORE_URLS: http://0.0.0.0:5050
       ConnectionStrings__AppDb: Host=postgres;Port=5432;Database=linear_like;Username=postgres;Password=postgres
-      Web__Origin: http://localhost:3000
-      Demo__InternalServiceApiKey: dev-internal-service-key
-    volumes:
-      - nuget_cache:/root/.nuget/packages
-      - node_modules_root:/workspaces/repo/node_modules
-      - node_modules_web:/workspaces/repo/web/node_modules
-      - pnpm_store:/root/.local/share/pnpm/store
-      - go_mod_cache:/go/pkg/mod
-      - go_build_cache:/root/.cache/go-build
+      Web__Origins__0: http://localhost:3000
+      Web__Origins__1: http://web:3000
     ports:
-      - "5050:5050"
+      - 5050:5050
+    volumes:
+      - ..:/app
     depends_on:
       postgres:
         condition: service_healthy
@@ -67,19 +53,17 @@ services:
       - appnet
 
   ext-api:
-    image: golang:1.24-bookworm
-    working_dir: /workspaces/repo
-    command: bash -lc "cd ext-api && go mod download && go run ./cmd/server"
+    profiles:
+      - ext-api
+    image: golang:1
+    working_dir: /app
+    command: go run ./cmd/server
     environment:
       EXT_API_ADDR: :8081
       APP_API_BASE_URL: http://api:5050
       INTERNAL_SERVICE_API_KEY: dev-internal-service-key
     volumes:
-      - ..:/workspaces/repo
-      - go_mod_cache:/go/pkg/mod
-      - go_build_cache:/root/.cache/go-build
-    ports:
-      - "8081:8081"
+      - ../ext-api:/app
     depends_on:
       api:
         condition: service_started

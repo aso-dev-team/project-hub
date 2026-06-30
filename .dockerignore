@@ -5,6 +5,7 @@
 **/.pnpm-store/
 logs/
 artifacts/
+output/playwright/
 
 # IDE生成物
 **/*.csproj.user
