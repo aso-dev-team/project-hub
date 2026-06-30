@@ -19,7 +19,20 @@
 - 主役は `web` と `api`。
 - `ext-api` は将来の外部 API 面を探る Go 実装で、完成済みの正式境界ではない。
 - 正式なローカル開発導線は `.devcontainer/docker-compose.yml`。
-- ルートの `docker-compose.yml` は手元実行用の補助であり、全体の正ではない。
+- Dev Container は git 管理外の `.devcontainer/docker-compose.local.yml` も読み込む。これは SSH agent、GitHub CLI、AI CLI などの個人ローカルな認証資産共有に使い、標準挙動は `.devcontainer/docker-compose.local.example.yml` の no-op を前提にする。
+- Dev Container のホスト向けポート公開は `devcontainer.json` の `forwardPorts` に寄せ、`.devcontainer/docker-compose.yml` では固定 host port publish を避ける。
+- ルートには `docker-compose.yml` を置かず、手元実行用の DB 起動も `.devcontainer/docker-compose.yml` に寄せる。
+- Dev Container 接続先で使う Node.js / pnpm / Go などの開発ツールは `devcontainer.json` の features で導入し、`.devcontainer/Dockerfile` で他イメージからランタイムを部分コピーしない。
+- `mise` は host / CI 側の task runner として扱い、Dev Container image には導入しない。
+- Dev Container の `api` 接続セッションは .NET SDK image 既存の `ubuntu` user を使う。Dockerfile では `ubuntu` など base image 固有 user の rename をしない。ホスト UID/GID への同期は Dev Container の `updateRemoteUserUID` に任せる。
+- UID 1000 に既存 user がいない base image へ切り替える必要が出た場合は、`common-utils` feature で作る user と `remoteUser` / cache volume の home path を合わせて見直す。
+- Dev Container の開発ツール version は互換性上の必要がある場合だけ固定し、通常は feature の既定値や `latest` / `lts` / major tag に追従する。feature lock file は tracked baseline に含めない。
+- `web` service の Next.js dev server 起動コマンドは `.devcontainer/Dockerfile` の `web` stage の `CMD` を正とし、Compose 側へ重複して書かない。
+- ローカル検証で Next.js dev server を別途ホスト起動しない。画面確認は Dev Container の `web` service を正とし、ホストからは `http://localhost:3000`、Compose network 内からは `http://web:3000` を見る。
+- `api` service は Dev Container の workspace container として待機させ、Compose 起動時に `dotnet watch` を自動起動しない。API を動かすときは Dev Container 内で `pnpm run dev:api` を明示的に実行する。
+- 標準 Compose では `node_modules` や pnpm store を分離するための named volume を `web` service に足さない。ホスト実行とコンテナ実行を頻繁に切り替える利用者は、必要に応じて自身で `node_modules` を作り直す。
+- `ext-api` の Compose service は残すが、通常の Dev Container 起動対象やポート公開対象には含めない。本実装として扱う段階で必要な設定を追加する。
+- `ext-api` は opt-in の開発用 service として、専用 image は build せず、Compose から Go 公式 image の既定ユーザーと既定 cache path を使う。通常接続する `api` service の non-root 方針とは分けて扱う。
 
 ## 基本方針
 
@@ -80,6 +93,14 @@ C1
 - `docs/`: アーキテクチャや外部 API の意図を説明する。
 - `deploy/`: 将来の配備構成のスケッチであり、現時点の正ではない。
 
+## CI / CD
+
+- GitHub Actions では `mise` を使わず、`pnpm` / `dotnet` / `go` を直接実行する。
+- Pull Request では check のみを実行し、GitHub Pages への deploy は行わない。
+- `main` へ push された内容を GitHub Pages に常時公開する。
+- GitHub Pages 公開は発表会向けの一時的な mock 公開であり、最終的な SSR 配備方針ではない。
+- Pages 用 build では `NEXT_OUTPUT=export` を指定し、`web/next.config.ts` で一時的に static export と `/project-hub` base path を有効にする。
+
 ## 実装上の解釈
 
 - `web` は `web/app/` を起点に、UI は `web/components/`、状態取得と mutation は `web/hooks/`、HTTP は `web/lib/` に寄せる。
@@ -92,6 +113,7 @@ C1
 ## 変更時の確認
 
 - `web` の確認は `pnpm --dir web lint` が基本。
+- `web` のブラウザ確認は起動済みの Dev Container `web` service を対象にする。Playwright CLI は原則 `api` コンテナ内で実行し、対象 URL は `http://web:3000` を使う。
 - `api` の確認は `dotnet build api/LinearStyle.Api.csproj`。
 - `ext-api` の確認は `cd ext-api && go test ./...`。
 - 全体確認は `pnpm run lint`、`pnpm run check`、`pnpm run test` を優先する。
