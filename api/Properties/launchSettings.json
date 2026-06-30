@@ -1,22 +1,22 @@
 {
   "profiles": {
     "LinearStyle.Api": {
+      "applicationUrl": "http://0.0.0.0:5050",
       "commandName": "Project",
-      "launchBrowser": true,
       "environmentVariables": {
         "ASPNETCORE_ENVIRONMENT": "Development"
       },
-      "applicationUrl": "https://localhost:52130;http://localhost:52131"
+      "launchBrowser": true
     },
     "WSL": {
       "commandName": "WSL2",
-      "launchBrowser": true,
-      "launchUrl": "https://localhost:52130",
+      "distributionName": "",
       "environmentVariables": {
         "ASPNETCORE_ENVIRONMENT": "Development",
-        "ASPNETCORE_URLS": "https://localhost:52130;http://localhost:52131"
+        "ASPNETCORE_URLS": "http://0.0.0.0:5050"
       },
-      "distributionName": ""
+      "launchBrowser": true,
+      "launchUrl": "http://localhost:5050"
     }
   }
 }
