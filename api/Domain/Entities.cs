@@ -21,7 +21,7 @@ public sealed class Team
 
     public string Key { get; set; } = string.Empty;
 
-    public Workspace Workspace { get; set; } = new();
+    public Workspace Workspace { get; set; } = null!;
 
     public List<Project> Projects { get; } = [];
 
@@ -40,7 +40,7 @@ public sealed class Project
 
     public bool Archived { get; set; }
 
-    public Team Team { get; set; } = new();
+    public Team Team { get; set; } = null!;
 
     public List<BoardStatus> Statuses { get; } = [];
 
@@ -61,7 +61,7 @@ public sealed class BoardStatus
 
     public int Order { get; set; }
 
-    public Project Project { get; set; } = new();
+    public Project Project { get; set; } = null!;
 }
 
 public sealed class Label
@@ -74,7 +74,7 @@ public sealed class Label
 
     public string Color { get; set; } = string.Empty;
 
-    public Project Project { get; set; } = new();
+    public Project Project { get; set; } = null!;
 
     public List<IssueLabel> IssueLabels { get; } = [];
 }
@@ -111,7 +111,7 @@ public sealed class Issue
 
     public DateTimeOffset UpdatedAt { get; set; }
 
-    public Project Project { get; set; } = new();
+    public Project Project { get; set; } = null!;
 
     public UserAccount? Assignee { get; set; }
 
@@ -124,9 +124,9 @@ public sealed class IssueLabel
 
     public string LabelId { get; set; } = string.Empty;
 
-    public Issue Issue { get; set; } = new();
+    public Issue Issue { get; set; } = null!;
 
-    public Label Label { get; set; } = new();
+    public Label Label { get; set; } = null!;
 }
 
 public sealed class UserAccount
@@ -156,9 +156,9 @@ public sealed class TeamMembership
 
     public string Role { get; set; } = string.Empty;
 
-    public Team Team { get; set; } = new();
+    public Team Team { get; set; } = null!;
 
-    public UserAccount User { get; set; } = new();
+    public UserAccount User { get; set; } = null!;
 }
 
 public sealed class PersonalAccessToken
@@ -181,7 +181,7 @@ public sealed class PersonalAccessToken
 
     public DateTimeOffset? RevokedAt { get; set; }
 
-    public UserAccount User { get; set; } = new();
+    public UserAccount User { get; set; } = null!;
 }
 
 public sealed class PatPrincipal
