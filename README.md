@@ -55,6 +55,12 @@ pnpm run check
 - Password: `demo123!`
 - PAT: `pat_demo_readonly_local`
 
+## デプロイ
+
+- `web`（Next.js）は Vercel の `project-hub-web` プロジェクトにデプロイしている。本番 URL: <https://project-hub-web-sage.vercel.app>
+- GitHub 連携により、ブランチ / PR ごとにプレビューデプロイが作成される。
+- `api` と `ext-api` は現時点で Vercel を含め公開先を持たず、Dev Container / ローカル実行が前提のまま。
+
 ## いま試していること
 
 - Cookie ベース認証のあるアプリ体験
@@ -70,9 +76,9 @@ pnpm run check
 ## このフェーズで正ではないもの
 
 - ルートの `docker-compose.yml`: 手動実行や雛形確認のために残っている補助ファイル
-- `deploy/`: 将来の配備構成を考えるためのスケッチ置き場
+- `deploy/`: `api` / `ext-api` の将来の配備構成を考えるためのスケッチ置き場（`web` は Vercel 運用に移行済みのため対象外）
 - 既存の `ext-api` 実装: 外部 API 面の参考実装であり、完成済みの正式境界ではない
-- 配備用のサービス別 Dockerfile / イメージ設計: まだ固定しない
+- 配備用のサービス別 Dockerfile / イメージ設計（`api` / `ext-api` 向け）: まだ固定しない
 
 ## 参考ドキュメント
 
@@ -92,7 +98,7 @@ pnpm run dev:db:reset
 
 ## 当面は後回しにすること
 
-- 配備構成の正式化
-- 配備用のサービス別 Dockerfile / イメージ設計
+- `api` / `ext-api` の配備構成の正式化（`web` は Vercel 運用に移行済み）
+- `api` / `ext-api` 向けのサービス別 Dockerfile / イメージ設計
 - `ext-api` を本当に別サービスへ切り出すかの最終決定
 - 共有 package / 共有型ディレクトリの導入
