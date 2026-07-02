@@ -161,7 +161,7 @@ export function DashboardPage({ user }: DashboardPageProps): JSX.Element {
   };
 
   return (
-    <main className="min-h-screen px-4 py-6 lg:px-6">
+    <main className="min-h-screen overflow-x-hidden px-4 py-6 lg:px-6">
       <div className="mx-auto flex w-full max-w-[1504px] flex-col gap-6">
         <section
           aria-label={`${user.displayName}のダッシュボード`}
@@ -183,7 +183,7 @@ export function DashboardPage({ user }: DashboardPageProps): JSX.Element {
             </p>
           </div>
           {isEditingDashboard ? (
-            <div className="flex flex-wrap items-center gap-2 sm:justify-end">
+            <div className="flex w-full flex-wrap items-center gap-2 sm:w-auto sm:justify-end">
               <Button
                 className="w-fit bg-white text-foreground shadow-sm"
                 onClick={() => setIsWidgetAddDialogOpen(true)}
@@ -245,7 +245,7 @@ export function DashboardPage({ user }: DashboardPageProps): JSX.Element {
             </SortableContext>
           </DndContext>
         ) : (
-          <div className="flex flex-wrap gap-4">
+          <div className="flex min-w-0 flex-wrap gap-4">
             {placedDashboardWidgets.map((widgetId) => (
               <DashboardWidgetRenderer key={widgetId} widgetId={widgetId} />
             ))}
@@ -269,14 +269,14 @@ function DashboardEditDropZone({ children }: { children?: ReactNode }): JSX.Elem
   const hasWidgets = Boolean(children);
 
   return (
-    <section className="min-h-[707px] rounded-[10px] border-2 border-dashed border-[#d1d5dc] bg-[#f9fafb] px-6 py-12 sm:px-12">
+    <section className="min-h-[707px] min-w-0 overflow-x-hidden rounded-[10px] border-2 border-dashed border-[#d1d5dc] bg-[#f9fafb] px-3 py-8 sm:px-6 sm:py-12 lg:px-12">
       <div className="mx-auto flex max-w-[1380px] flex-col items-center text-center">
         <h2 className="text-lg font-semibold leading-7 text-[#364153]">ウィジェット配置エリア</h2>
         <p className="text-sm leading-5 text-[#6a7282]">
           下のツールバーからウィジェットを追加するか、既存のウィジェットをドラッグして並び替えてください
         </p>
       </div>
-      {hasWidgets ? <div className="mt-4 flex flex-wrap items-start gap-4">{children}</div> : null}
+      {hasWidgets ? <div className="mt-4 flex min-w-0 flex-wrap items-start gap-4">{children}</div> : null}
     </section>
   );
 }
@@ -296,7 +296,11 @@ function SortableDashboardWidget({ widgetId }: { widgetId: DashboardWidgetKind }
 
   return (
     <div
-      className={cn("touch-manipulation", isDragging && "relative z-10 opacity-60")}
+      className={cn(
+        "w-full min-w-0 touch-manipulation",
+        getDashboardWidgetWidthClass(widgetId),
+        isDragging && "relative z-10 opacity-60",
+      )}
       ref={setNodeRef}
       style={{
         transform: CSS.Transform.toString(transform),
@@ -314,6 +318,18 @@ function SortableDashboardWidget({ widgetId }: { widgetId: DashboardWidgetKind }
       />
     </div>
   );
+}
+
+function getDashboardWidgetWidthClass(widgetId: DashboardWidgetKind): string {
+  if (widgetId === "burndown" || widgetId === "kanban") {
+    return "max-w-[915px]";
+  }
+
+  if (widgetId === "recent-activity") {
+    return "max-w-[495px]";
+  }
+
+  return "max-w-[449px]";
 }
 
 function DashboardWidgetRenderer({

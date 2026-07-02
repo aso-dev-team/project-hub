@@ -33,16 +33,16 @@ export function DashboardWidget({
     <Card
       aria-busy={isLoading}
       className={cn(
-        "group rounded-[14px] border-2 border-[rgba(0,0,0,0.1)] bg-white shadow-none transition-[border-color,box-shadow]",
+        "group w-full min-w-0 overflow-hidden rounded-[14px] border-2 border-[rgba(0,0,0,0.1)] bg-white shadow-none transition-[border-color,box-shadow]",
         "hover:border-[#d1d5dc] hover:shadow-[0_4px_2px_rgba(0,0,0,0.25)]",
         className,
       )}
     >
-      <CardHeader className="flex-row items-center justify-between px-6 pb-4 pt-6">
-        <CardTitle className="text-base font-medium leading-6 tracking-normal">{title}</CardTitle>
+      <CardHeader className="flex-row items-center justify-between gap-3 px-4 pb-4 pt-5 sm:px-6 sm:pt-6">
+        <CardTitle className="min-w-0 text-base font-medium leading-6 tracking-normal">{title}</CardTitle>
         {headerAction ?? <DashboardWidgetDragHandle dragHandleProps={dragHandleProps} isVisible={isEditing} />}
       </CardHeader>
-      <CardContent className={cn("px-6 pb-6 pt-2", contentClassName)}>{children}</CardContent>
+      <CardContent className={cn("min-w-0 px-4 pb-5 pt-2 sm:px-6 sm:pb-6", contentClassName)}>{children}</CardContent>
     </Card>
   );
 }
