@@ -10,9 +10,11 @@ using Microsoft.EntityFrameworkCore;
 
 var builder = WebApplication.CreateBuilder(args);
 
-var webOrigin = builder.Configuration["Web:Origin"]
+var configuredWebOrigins = builder.Configuration.GetSection("Web:Origins").Get<string[]>() ?? [];
+var legacyWebOrigin = builder.Configuration["Web:Origin"]
     ?? builder.Configuration["Frontend:Origin"]
     ?? "http://localhost:3000";
+var webOrigins = configuredWebOrigins.Length > 0 ? configuredWebOrigins : [legacyWebOrigin];
 var connectionString = builder.Configuration.GetConnectionString("AppDb")
     ?? "Host=localhost;Port=5432;Database=linear_like;Username=postgres;Password=postgres";
 
@@ -23,7 +25,7 @@ builder.Services.AddCors(options =>
         policy =>
         {
             policy
-                .WithOrigins(webOrigin)
+                .WithOrigins(webOrigins)
                 .AllowAnyHeader()
                 .AllowAnyMethod()
                 .AllowCredentials();

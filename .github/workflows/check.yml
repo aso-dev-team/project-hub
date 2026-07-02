@@ -38,5 +38,5 @@ jobs:
         with:
           go-version-file: ext-api/go.mod
           cache-dependency-path: ext-api/go.sum
-      - working-directory: ext-api
-        run: go test ./...
+      - run: go test ./...
+        working-directory: ext-api

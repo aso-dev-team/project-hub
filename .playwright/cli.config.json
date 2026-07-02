@@ -1,0 +1,10 @@
+{
+  "browser": {
+    "browserName": "chromium",
+    "launchOptions": {
+      "headless": true,
+      "chromiumSandbox": false
+    }
+  },
+  "outputDir": "output/playwright"
+}

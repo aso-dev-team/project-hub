@@ -1,24 +1,33 @@
-# Dev container image for the attached `api` workspace service.
-FROM node:24-bookworm AS node
+# Dev container images for the local Compose development stack.
+FROM node:lts AS web
 
-FROM golang:1.24-bookworm AS golang
+RUN npm install --global pnpm@latest
 
-FROM mcr.microsoft.com/dotnet/sdk:10.0
+WORKDIR /app
+USER node
+CMD ["bash", "-lc", "CI=true pnpm install --frozen-lockfile && pnpm --dir web exec next dev --webpack --hostname 0.0.0.0 --port 3000"]
 
-COPY --from=node /usr/local/bin/node /usr/local/bin/
-COPY --from=node /usr/local/lib/node_modules /usr/local/lib/node_modules
-COPY --from=golang /usr/local/go /usr/local/go
+FROM mcr.microsoft.com/dotnet/sdk:10.0 AS api
 
-ENV PATH="/usr/local/go/bin:${PATH}"
+SHELL ["/bin/bash", "-o", "pipefail", "-c"]
 
 RUN apt-get update \
   && apt-get install -y --no-install-recommends \
-  git curl ca-certificates postgresql-client \
-  && ln -sf ../lib/node_modules/npm/bin/npm-cli.js /usr/local/bin/npm \
- && ln -sf ../lib/node_modules/npm/bin/npx-cli.js /usr/local/bin/npx \
- && ln -sf ../lib/node_modules/corepack/dist/corepack.js /usr/local/bin/corepack \
- && rm -rf /var/lib/apt/lists/* \
- && corepack enable \
- && corepack prepare pnpm@10.18.1 --activate
+  git \
+  curl \
+  ca-certificates \
+  fonts-noto-cjk \
+  && rm -rf /var/lib/apt/lists/* \
+  && mkdir -p \
+  /home/ubuntu/.cache/ms-playwright \
+  /home/ubuntu/.local/share/pnpm/store \
+  /home/ubuntu/.nuget/packages \
+  /home/ubuntu/go/pkg/mod \
+  && chown -R ubuntu:ubuntu \
+  /home/ubuntu/.cache \
+  /home/ubuntu/.local \
+  /home/ubuntu/.nuget \
+  /home/ubuntu/go
 
-WORKDIR /workspaces/repo
+WORKDIR /app
+CMD ["sleep", "infinity"]

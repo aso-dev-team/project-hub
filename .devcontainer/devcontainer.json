@@ -1,29 +1,89 @@
+// フォーマットについては https://aka.ms/devcontainer.json を参照
+// 設定オプションについては https://github.com/devcontainers/templates/tree/main/src/docker-existing-docker-compose を参照
 {
   "name": "project-hub-dev",
-  "dockerComposeFile": "docker-compose.yml",
+  "dockerComposeFile": [
+    "docker-compose.yml",
+    "docker-compose.local.yml"
+  ],
   "service": "api",
-  "workspaceFolder": "/workspaces/repo",
-
+  "workspaceFolder": "/app",
   "shutdownAction": "stopCompose",
-
   "customizations": {
     "vscode": {
+      // コンテナ内にデフォルトインストールされる拡張機能と設定
       "extensions": [
-        "ms-dotnettools.csharp",
-        "ms-azuretools.vscode-docker",
+        "DavidAnson.vscode-markdownlint",
         "dbaeumer.vscode-eslint",
+        "docker.docker",
+        "donjayamanne.githistory",
+        "bradlc.vscode-tailwindcss",
+        "eamodio.gitlens",
+        "ecmel.vscode-html-css",
+        "editorconfig.editorconfig",
+        "edwinhuish.better-comments-next",
         "esbenp.prettier-vscode",
-        "golang.go"
+        "exiasr.hadolint",
+        "f440.locopy",
+        "golang.go",
+        "ionutvmi.path-autocomplete",
+        "mhutchie.git-graph",
+        "ms-azuretools.vscode-containers",
+        "ms-azuretools.vscode-docker",
+        "ms-dotnettools.vscode-dotnet-runtime",
+        "ms-dotnettools.csdevkit",
+        "ms-dotnettools.csharp",
+        "pucelle.vscode-css-navigation",
+        "rvest.vs-code-prettier-eslint",
+        "tamasfe.even-better-toml",
+        "yzhang.markdown-all-in-one",
+        "3w36zj6.textlint"
       ],
       "settings": {
         "editor.formatOnSave": true
       }
     }
   },
-
-  "forwardPorts": [3000, 5050, 8081],
-
-  "postCreateCommand": "bash -lc 'echo Dev container ready'",
-
-  "remoteUser": "root"
+  // コンテナに後付けする ghcr.io イメージ
+  "features": {
+    "ghcr.io/devcontainers/features/common-utils:2": {
+      "configureZshAsDefaultShell": true,
+      "username": "ubuntu"
+    },
+    "ghcr.io/devcontainers/features/node:2": {},
+    "ghcr.io/devcontainers/features/go:1": {}
+  },
+  // VSCode 経由で公開するポート
+  "forwardPorts": [
+    "web:3000",
+    "api:5050",
+    "postgres:5432"
+  ],
+  // 公開するポートの設定
+  "portsAttributes": {
+    "web:3000": {
+      "label": "Next.js (Web)",
+      "onAutoForward": "openBrowser"
+    },
+    "api:5050": {
+      "label": "DOTNET (API)",
+      "onAutoForward": "silent"
+    },
+    "postgres:5432": {
+      "label": "PostgreSQL（DB）",
+      "onAutoForward": "silent"
+    }
+  },
+  "otherPortsAttributes": {
+    "onAutoForward": "silent"
+  },
+  // docker-compose.local.yml が存在しないと devcontainer 作成に失敗するので docker-compose.local.example.yml をコピーしておく
+  "initializeCommand": "sh -c 'test -f .devcontainer/docker-compose.local.yml || cp .devcontainer/docker-compose.local.example.yml .devcontainer/docker-compose.local.yml'",
+  // package.json の Playwright CLI 依存を install し、Chromium headless shell を Dev Container 作成後に導入する
+  "postCreateCommand": "bash .devcontainer/scripts/install-playwright-tools.sh",
+  // ゾンビプロセス抹殺
+  "init": true,
+  // VSCode で開いたときに初期ログインするユーザー
+  "remoteUser": "ubuntu",
+  "updateRemoteUserUID": true
 }

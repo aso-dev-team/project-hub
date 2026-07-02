@@ -1,24 +1,26 @@
 {
   "name": "project-hub",
   "private": true,
-  "packageManager": "pnpm@10.18.1",
   "scripts": {
     "dev:web": "pnpm --dir web dev",
     "dev:api": "dotnet watch --project api/LinearStyle.Api.csproj",
     "dev:ext": "go run ./ext-api/cmd/server",
     "dev:db": "docker compose up postgres -d",
     "dev:db:reset": "docker compose -f .devcontainer/docker-compose.yml down -v",
+    "lint": "pnpm run lint:web && pnpm run lint:docs",
     "lint:web": "pnpm --dir web lint",
     "lint:docs": "textlint README.md CONTRIBUTING.md docs/*.md",
-    "lint": "pnpm run lint:web && pnpm run lint:docs",
-    "check:api": "dotnet build api/LinearStyle.Api.csproj --nologo",
-    "test:ext": "cd ext-api && go test ./...",
-    "check:ext": "pnpm run test:ext",
-    "check": "pnpm run lint && pnpm run check:api && pnpm run check:ext",
     "test": "pnpm run test:ext",
+    "test:ext": "cd ext-api && go test ./...",
+    "check": "pnpm run lint && pnpm run check:api && pnpm run check:ext",
+    "check:api": "dotnet build api/LinearStyle.Api.csproj --nologo",
+    "check:ext": "pnpm run test:ext",
+    "check:playwright": "bash -lc 'mkdir -p output/playwright && trap \"pnpm exec playwright-cli close >/dev/null 2>&1 || true\" EXIT && pnpm exec playwright-cli open http://web:3000 && pnpm exec playwright-cli snapshot >/dev/null && pnpm exec playwright-cli screenshot --filename=output/playwright/home.png'",
     "format:go": "gofmt -w ./ext-api"
   },
   "devDependencies": {
+    "@playwright/cli": "^0.1.14",
+    "playwright": "^1.61.0",
     "textlint": "^15.5.2",
     "textlint-rule-preset-ja-spacing": "^2.4.3"
   }
