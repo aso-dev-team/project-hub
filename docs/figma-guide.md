@@ -114,6 +114,10 @@ Figma file
 | 複雑な業務ルール   | 文章・表・状態遷移図の方が向いている            |
 | 変更履歴           | Jira / GitHub / Notionの方が追跡しやすい        |
 
+## プロジェクト本体の Figma ファイル
+
+- [01_プロジェクト管理サービス](https://www.figma.com/design/jrVzwLthapUfLWtzJThZUY/01_%E3%83%97%E3%83%AD%E3%82%B8%E3%82%A7%E3%82%AF%E3%83%88%E7%AE%A1%E7%90%86%E3%82%B5%E3%83%BC%E3%83%93%E3%82%B9)
+
 ## リンク集
 
 - [Figma 勉強用](https://help.figma.com/hc/ja/sections/30880632542743-%E5%88%9D%E5%BF%83%E8%80%85%E5%90%91%E3%81%91Figma%E3%83%87%E3%82%B6%E3%82%A4%E3%83%B3)
